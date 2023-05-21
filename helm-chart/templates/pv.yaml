@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.npm.containerName }}-data-pv
+spec:
+  capacity:
+    storage: {{ .Values.storage.size }}
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    server: {{ .Values.storage.nfs.server }}
+    path: {{ .Values.storage.nfs.path }}/data
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.npm.containerName }}-letsencrypt-pv
+spec:
+  capacity:
+    storage: {{ .Values.storage.size }}
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    server: {{ .Values.storage.nfs.server }}
+    path: {{ .Values.storage.nfs.path }}/letsencrypt
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.db.containerName }}-db-pv
+spec:
+  capacity:
+    storage: {{ .Values.storage.size }}
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    server: {{ .Values.storage.nfs.server }}
+    path: {{ .Values.storage.nfs.path }}/db

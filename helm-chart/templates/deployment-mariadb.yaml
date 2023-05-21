@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.db.containerName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.db.containerName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.db.containerName }}
+    spec:
+      containers:
+        - name: {{ .Values.db.containerName }}
+          image: {{ .Values.db.image }}:{{ .Values.db.tag }}
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "{{ .Values.db.MYSQL_ROOT_PASSWORD }}"
+            - name: MYSQL_DATABASE
+              value: "{{ .Values.db.MYSQL_DATABASE }}"
+            - name: MYSQL_USER
+              value: "{{ .Values.db.MYSQL_USER }}"
+            - name: MYSQL_PASSWORD
+              value: "{{ .Values.db.MYSQL_PASSWORD }}"
+          volumeMounts:
+            - name: {{ .Values.db.containerName }}
+              mountPath: {{ .Values.db.dbPath }}
+      volumes:
+        - name: {{ .Values.db.containerName }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.db.containerName }}-db-pvc

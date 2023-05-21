@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.npm.containerName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.npm.containerName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.npm.containerName }}
+    spec:
+      containers:
+        - name: {{ .Values.npm.containerName }}
+          image: {{ .Values.npm.image }}:{{ .Values.npm.tag }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.ports.httpPort }}
+            - name: https
+              containerPort: {{ .Values.service.ports.httpsPort }}
+            - name: admin
+              containerPort: {{ .Values.service.ports.adminPort }}
+          env:
+            - name: DB_MYSQL_HOST
+              value: "{{ .Values.db.DB_MYSQL_HOST }}"
+            - name: DB_MYSQL_PORT
+              value: "{{ .Values.db.DB_MYSQL_PORT }}"
+            - name: DB_MYSQL_USER
+              value: "{{ .Values.db.DB_MYSQL_USER }}"
+            - name: DB_MYSQL_PASSWORD
+              value: "{{ .Values.db.DB_MYSQL_PASSWORD }}"
+            - name: DB_MYSQL_NAME
+              value: "{{ .Values.db.DB_MYSQL_NAME }}"
+          volumeMounts:
+            - name: data
+              mountPath: {{ .Values.npm.dataPath }}
+            - name: letsencrypt
+              mountPath: {{ .Values.npm.letsencryptPath }}
+          dependsOn:
+            - name: {{ .Values.db.containerName }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.npm.containerName }}-data-pvc
+        - name: letsencrypt
+          persistentVolumeClaim:
+            claimName: {{ .Values.npm.containerName }}-letsencrypt-pvc

@@ -1,0 +1,8 @@
+apiVersion: v2
+name: nginx-proxy-manager
+version: 1.0.0
+description: A Helm chart for deploying Nginx Proxy Manager
+AppVersion: 2.9.8
+maintainers:
+  - name: genis.vidal
+    email: pliksys@gmail.com
