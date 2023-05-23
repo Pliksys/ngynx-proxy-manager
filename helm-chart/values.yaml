@@ -1,8 +1,37 @@
-apiVersion: v2
-name: nginx-proxy-manager
-version: 1.0.0
-description: A Helm chart for deploying Nginx Proxy Manager
-AppVersion: 2.9.8
-maintainers:
-  - name: genis.vidal
-    email: pliksys@gmail.com
+#values.yaml
+
+npm:
+  image: jc21/nginx-proxy-manager
+  tag: latest
+  pullPolicy: IfNotPresent
+  containerName: nginx-proxy-manage
+  dataPath: /data
+  letsencryptPath: /etc/letsencrypt
+
+service:
+  ports:
+    httpPort: 80
+    httpsPort: 443
+    adminPort: 81
+  type: NodePort
+  loadBalancerIP: []
+
+db:
+  image: jc21/mariadb-aria
+  tag: latest
+  pullPolicy: IfNotPresent
+  containerName: mariadb
+  MYSQL_ROOT_PASSWORD: password
+  MYSQL_NAME: npm
+  MYSQL_USER: npm
+  MYSQL_PASSWORD: npm
+  DB_MYSQL_HOST: db
+  DB_MYSQL_PORT: 3306
+  dbPath: /var/lib/mysql
+
+storage:
+  size: 1Gi
+  nfs:
+    enable: true
+    server: []
+    path: []
